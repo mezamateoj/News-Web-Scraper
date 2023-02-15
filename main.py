@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+import typer
+import re
 
 r =  requests.get('https://www.reuters.com/article/us-health-coronavirus-global-deaths/global-coronavirus-deaths-pass-agonizing-milestone-of-1-million-idUSKBN26K08Y')
 soup = BeautifulSoup(r.text, 'html.parser')
@@ -14,11 +16,21 @@ article_content_full = soup.findAll('p',attrs={"class":"Paragraph-paragraph-2Bgu
 # loop through every p tag and extract the text
 article_content = []
 for i in article_content_full:
-    article_content.append(i.text)
+    article_content.append(i.text + '\n')
 
 # join the list with the content previously extracted.    
 content = ''.join(article_content)
+content = re.sub("[\(\[].*?[\)\]]", "", content)  # remove text inside ()
 
 # still need to implement more functions and add a txt file with all
 # info extracted in the scrape.
+
+# add the page content to a txt file
+name_file = input('Name the txt file: ')
+article_file = open(f'{name_file}.txt', 'w')
+article_file.writelines(content)
+article_file.close()
+#print(article_content)
+
+
 
